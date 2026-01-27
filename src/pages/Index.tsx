@@ -4,6 +4,7 @@ import { useGoogleMaps } from '@/hooks/useGoogleMaps';
 import { SettingsPanel } from '@/components/SettingsPanel';
 import { DepartureCard } from '@/components/DepartureCard';
 import { GrandTotalCard } from '@/components/GrandTotalCard';
+import { PrintReport } from '@/components/PrintReport';
 import { Button } from '@/components/ui/button';
 import { Plus, Car, AlertCircle } from 'lucide-react';
 
@@ -101,12 +102,19 @@ const Index = () => {
 
           {/* Main Content - Departures */}
           <div className="space-y-6">
-            {/* Grand Total */}
-            <GrandTotalCard
-              distance={grandTotal.distance}
-              fuelConsumption={grandTotal.fuelConsumption}
-              totalCost={grandTotal.totalCost}
-            />
+            {/* Grand Total with Print */}
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+              <GrandTotalCard
+                distance={grandTotal.distance}
+                fuelConsumption={grandTotal.fuelConsumption}
+                totalCost={grandTotal.totalCost}
+              />
+              <PrintReport
+                departures={departures}
+                settings={settings}
+                grandTotal={grandTotal}
+              />
+            </div>
 
             {/* Departures */}
             <div className="space-y-6">
