@@ -1,6 +1,7 @@
 import { Departure, Settings } from '@/types/route';
 import { Button } from '@/components/ui/button';
 import { AddressInput } from './AddressInput';
+import { RouteMap } from './RouteMap';
 import {
   MapPin,
   Flag,
@@ -161,6 +162,9 @@ export function DepartureCard({
             </div>
           </div>
         )}
+
+        {/* Map Preview */}
+        <RouteMap departure={departure} isGoogleLoaded={isGoogleLoaded} />
       </div>
     </div>
   );
