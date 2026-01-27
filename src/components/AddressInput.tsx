@@ -30,13 +30,12 @@ export function AddressInput({
     setLocalValue(value);
   }, [value]);
 
-  // Setup autocomplete
+  // Setup autocomplete (legacy Autocomplete – works reliably)
   useEffect(() => {
     if (!isGoogleLoaded || !window.google?.maps?.places || !inputRef.current) {
       return;
     }
 
-    // Don't reinitialize if already set up
     if (autocompleteRef.current) {
       return;
     }
