@@ -21,7 +21,11 @@ const Index = () => {
     grandTotal,
   } = useDepartures();
 
-  const { isLoaded, loadError, calculateRoute } = useGoogleMaps(settings.googleMapsApiKey);
+  // If setting is empty, use key from env (e.g. Netlify / .env)
+  const googleMapsApiKey =
+    settings.googleMapsApiKey || import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
+
+  const { isLoaded, loadError, calculateRoute } = useGoogleMaps(googleMapsApiKey);
 
   const handleCalculate = async (departureId: string) => {
     const departure = departures.find((d) => d.id === departureId);
@@ -81,9 +85,12 @@ const Index = () => {
               onUpdate={updateSettings}
               isApiLoaded={isLoaded}
               apiError={loadError}
+              isApiKeyFromEnv={
+                !settings.googleMapsApiKey && !!import.meta.env.VITE_GOOGLE_MAPS_API_KEY
+              }
             />
 
-            {!settings.googleMapsApiKey && (
+            {!googleMapsApiKey && (
               <div className="card-elevated p-4 border-l-4 border-warning">
                 <div className="flex gap-3">
                   <AlertCircle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />

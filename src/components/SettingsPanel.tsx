@@ -16,9 +16,17 @@ interface SettingsPanelProps {
   onUpdate: (updates: Partial<Settings>) => void;
   isApiLoaded: boolean;
   apiError: string | null;
+  /** When true, the key is taken from env and the setting field is empty */
+  isApiKeyFromEnv?: boolean;
 }
 
-export function SettingsPanel({ settings, onUpdate, isApiLoaded, apiError }: SettingsPanelProps) {
+export function SettingsPanel({
+  settings,
+  onUpdate,
+  isApiLoaded,
+  apiError,
+  isApiKeyFromEnv = false,
+}: SettingsPanelProps) {
   return (
     <div className="card-elevated p-6 animate-fade-in">
       <div className="flex items-center gap-3 mb-6">
@@ -54,9 +62,16 @@ export function SettingsPanel({ settings, onUpdate, isApiLoaded, apiError }: Set
             type="password"
             value={settings.googleMapsApiKey}
             onChange={(e) => onUpdate({ googleMapsApiKey: e.target.value })}
-            placeholder="Introduceți cheia API..."
+            placeholder={
+              isApiKeyFromEnv ? 'Preluată din variabile de mediu' : 'Introduceți cheia API...'
+            }
             className="font-mono text-sm"
           />
+          {isApiKeyFromEnv && (
+            <p className="text-sm text-muted-foreground mt-1">
+              Cheie API folosită din VITE_GOOGLE_MAPS_API_KEY
+            </p>
+          )}
           {apiError && (
             <p className="text-sm text-destructive mt-1">{apiError}</p>
           )}
