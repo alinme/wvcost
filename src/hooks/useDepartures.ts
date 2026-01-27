@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Departure, Address } from '@/types/route';
 
 const generateId = () => Math.random().toString(36).substring(2, 9);
@@ -18,15 +18,44 @@ const createEmptyDeparture = (index: number): Departure => ({
   fuelConsumption: null,
   totalCost: null,
   isCalculating: false,
+  isCollapsed: false,
 });
 
+const DEPARTURES_KEY = 'route-estimator-departures';
+
+function loadDepartures(): Departure[] {
+  try {
+    const raw = localStorage.getItem(DEPARTURES_KEY);
+    if (!raw) return [createEmptyDeparture(1)];
+    const parsed = JSON.parse(raw) as Departure[];
+    if (!Array.isArray(parsed) || parsed.length === 0) return [createEmptyDeparture(1)];
+    return parsed.map((d) => ({
+      ...d,
+      isCollapsed: d.isCollapsed ?? false,
+      isCalculating: false,
+    }));
+  } catch {
+    return [createEmptyDeparture(1)];
+  }
+}
+
+function saveDepartures(departures: Departure[]) {
+  try {
+    localStorage.setItem(DEPARTURES_KEY, JSON.stringify(departures));
+  } catch {
+    /* ignore */
+  }
+}
+
 export function useDepartures() {
-  const [departures, setDepartures] = useState<Departure[]>([
-    createEmptyDeparture(1),
-  ]);
+  const [departures, setDepartures] = useState<Departure[]>(loadDepartures);
+
+  useEffect(() => {
+    saveDepartures(departures);
+  }, [departures]);
 
   const addDeparture = useCallback(() => {
-    setDepartures(prev => [...prev, createEmptyDeparture(prev.length + 1)]);
+    setDepartures((prev) => [...prev, createEmptyDeparture(prev.length + 1)]);
   }, []);
 
   const removeDeparture = useCallback((id: string) => {

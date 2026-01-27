@@ -124,6 +124,7 @@ const Index = () => {
                   departure={departure}
                   settings={settings}
                   isGoogleLoaded={isLoaded}
+                  homeAddress={settings.homeAddress}
                   onUpdateAddress={(type, value, stopId) =>
                     updateAddress(departure.id, type, value, stopId)
                   }
@@ -131,6 +132,11 @@ const Index = () => {
                   onRemoveStop={(stopId) => removeIntermediateStop(departure.id, stopId)}
                   onRemove={() => removeDeparture(departure.id)}
                   onCalculate={() => handleCalculate(departure.id)}
+                  onToggleCollapse={() =>
+                    updateDeparture(departure.id, {
+                      isCollapsed: !(departure.isCollapsed ?? false),
+                    })
+                  }
                   canRemove={departures.length > 1}
                 />
               ))}

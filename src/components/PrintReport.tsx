@@ -26,145 +26,148 @@ export function PrintReport({ departures, settings, grandTotal }: PrintReportPro
         <meta charset="UTF-8">
         <title>Raport Estimare Fonduri Rută</title>
         <style>
-          * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-          }
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          @page { size: A4; margin: 10mm; }
           body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 40px;
+            padding: 16px;
             color: #1a1a2e;
-            line-height: 1.6;
+            line-height: 1.3;
+            font-size: 11px;
           }
           .header {
             text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #0f766e;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #0f766e;
           }
           .header h1 {
             color: #0f766e;
-            font-size: 28px;
-            margin-bottom: 8px;
+            font-size: 16px;
+            margin-bottom: 2px;
           }
           .header .date {
             color: #64748b;
-            font-size: 14px;
+            font-size: 10px;
           }
           .settings-section {
             background: #f8fafc;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
+            padding: 10px 12px;
+            border-radius: 4px;
+            margin-bottom: 12px;
           }
           .settings-section h2 {
-            font-size: 16px;
+            font-size: 11px;
             color: #475569;
-            margin-bottom: 12px;
+            margin-bottom: 6px;
           }
           .settings-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
+            gap: 8px;
           }
-          .setting-item {
-            text-align: center;
-          }
+          .setting-item { text-align: center; }
           .setting-item .label {
-            font-size: 12px;
+            font-size: 9px;
             color: #64748b;
             text-transform: uppercase;
           }
           .setting-item .value {
-            font-size: 18px;
+            font-size: 12px;
             font-weight: 600;
             color: #1e293b;
           }
           .departure-card {
             border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            border-radius: 4px;
+            margin-bottom: 8px;
             overflow: hidden;
           }
           .departure-header {
             background: linear-gradient(135deg, #0f766e, #14b8a6);
             color: white;
-            padding: 12px 20px;
+            padding: 6px 10px;
             font-weight: 600;
+            font-size: 11px;
           }
-          .departure-body {
-            padding: 20px;
-          }
-          .route-info {
-            margin-bottom: 16px;
-          }
+          .departure-body { padding: 10px; }
+          .route-info { margin-bottom: 6px; }
           .route-info .label {
-            font-size: 12px;
+            font-size: 9px;
             color: #64748b;
             text-transform: uppercase;
-            margin-bottom: 4px;
+            margin-bottom: 1px;
           }
           .route-info .value {
-            font-size: 14px;
+            font-size: 10px;
             color: #1e293b;
           }
           .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
+            gap: 8px;
             background: #f8fafc;
-            padding: 16px;
-            border-radius: 8px;
+            padding: 8px;
+            border-radius: 4px;
           }
-          .stat-item {
-            text-align: center;
-          }
+          .stat-item { text-align: center; }
           .stat-item .value {
-            font-size: 24px;
+            font-size: 14px;
             font-weight: 700;
             color: #0f766e;
           }
           .stat-item .unit {
-            font-size: 12px;
+            font-size: 9px;
             color: #64748b;
           }
           .grand-total {
             background: linear-gradient(135deg, #0f766e, #14b8a6);
             color: white;
-            padding: 24px;
-            border-radius: 8px;
-            margin-top: 30px;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 12px;
           }
           .grand-total h2 {
             text-align: center;
-            margin-bottom: 20px;
-            font-size: 20px;
+            margin-bottom: 10px;
+            font-size: 13px;
           }
           .grand-total .stats-grid {
             background: rgba(255, 255, 255, 0.1);
           }
-          .grand-total .stat-item .value {
-            color: white;
-          }
-          .grand-total .stat-item .unit {
-            color: rgba(255, 255, 255, 0.8);
-          }
+          .grand-total .stat-item .value { color: white; }
+          .grand-total .stat-item .unit { color: rgba(255, 255, 255, 0.8); }
           .footer {
             text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
+            margin-top: 12px;
+            padding-top: 8px;
             border-top: 1px solid #e2e8f0;
             color: #64748b;
-            font-size: 12px;
+            font-size: 9px;
           }
           @media print {
-            body {
-              padding: 20px;
-            }
-            .departure-card {
-              break-inside: avoid;
-            }
+            body { padding: 0; font-size: 10px; }
+            .header { margin-bottom: 8px; padding-bottom: 4px; }
+            .header h1 { font-size: 14px; }
+            .header .date { font-size: 9px; }
+            .settings-section { padding: 8px 10px; margin-bottom: 8px; }
+            .settings-section h2 { font-size: 10px; margin-bottom: 4px; }
+            .settings-grid { gap: 6px; }
+            .setting-item .label { font-size: 8px; }
+            .setting-item .value { font-size: 11px; }
+            .departure-card { margin-bottom: 6px; }
+            .departure-header { padding: 4px 8px; font-size: 10px; }
+            .departure-body { padding: 6px; }
+            .route-info { margin-bottom: 4px; }
+            .route-info .label { font-size: 8px; }
+            .route-info .value { font-size: 9px; }
+            .stats-grid { gap: 6px; padding: 6px; }
+            .stat-item .value { font-size: 12px; }
+            .stat-item .unit { font-size: 8px; }
+            .grand-total { padding: 8px; margin-top: 8px; }
+            .grand-total h2 { margin-bottom: 6px; font-size: 11px; }
+            .footer { margin-top: 8px; padding-top: 4px; font-size: 8px; }
+            .departure-card { break-inside: avoid; }
           }
         </style>
       </head>

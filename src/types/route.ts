@@ -14,6 +14,7 @@ export interface Departure {
   fuelConsumption: number | null;
   totalCost: number | null;
   isCalculating: boolean;
+  isCollapsed?: boolean;
 }
 
 export interface Settings {
@@ -21,13 +22,15 @@ export interface Settings {
   fuelPrice: number;
   fuelType: string;
   averageConsumption: number;
+  homeAddress: string;
 }
 
 export const defaultSettings: Settings = {
   googleMapsApiKey: '',
   fuelPrice: 7.5,
   fuelType: 'Motorină',
-  averageConsumption: 8.5,
+  averageConsumption: 7.5,
+  homeAddress: '',
 };
 
 export const fuelTypes = [

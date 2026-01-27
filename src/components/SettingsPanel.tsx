@@ -1,6 +1,7 @@
 import { Settings, fuelTypes } from '@/types/route';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { AddressInput } from '@/components/AddressInput';
 import {
   Select,
   SelectContent,
@@ -8,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Settings as SettingsIcon, Key, Fuel, Gauge, DollarSign } from 'lucide-react';
+import { Settings as SettingsIcon, Key, Fuel, Gauge, DollarSign, Home } from 'lucide-react';
 
 interface SettingsPanelProps {
   settings: Settings;
@@ -28,10 +29,24 @@ export function SettingsPanel({ settings, onUpdate, isApiLoaded, apiError }: Set
       </div>
 
       <div className="grid gap-5">
+        {/* Home Address */}
+        <div className="space-y-1.5">
+          <Label className="input-label flex items-center gap-2">
+            <Home className="h-3.5 w-3.5 shrink-0 inline-flex" />
+            Adresă domiciliu
+          </Label>
+          <AddressInput
+            value={settings.homeAddress}
+            onChange={(v) => onUpdate({ homeAddress: v })}
+            placeholder="Opțional – folosiți „Domiciliu” la plecare/întoarcere"
+            isGoogleLoaded={isApiLoaded}
+          />
+        </div>
+
         {/* API Key */}
         <div className="space-y-1.5">
           <Label htmlFor="apiKey" className="input-label flex items-center gap-2">
-            <Key className="h-3.5 w-3.5" />
+            <Key className="h-3.5 w-3.5 shrink-0 inline-flex" />
             Cheie API Google Maps
           </Label>
           <Input
@@ -56,7 +71,7 @@ export function SettingsPanel({ settings, onUpdate, isApiLoaded, apiError }: Set
         {/* Fuel Type */}
         <div className="space-y-1.5">
           <Label htmlFor="fuelType" className="input-label flex items-center gap-2">
-            <Fuel className="h-3.5 w-3.5" />
+            <Fuel className="h-3.5 w-3.5 shrink-0 inline-flex" />
             Tip combustibil
           </Label>
           <Select value={settings.fuelType} onValueChange={(v) => onUpdate({ fuelType: v })}>
@@ -76,7 +91,7 @@ export function SettingsPanel({ settings, onUpdate, isApiLoaded, apiError }: Set
         {/* Fuel Price */}
         <div className="space-y-1.5">
           <Label htmlFor="fuelPrice" className="input-label flex items-center gap-2">
-            <DollarSign className="h-3.5 w-3.5" />
+            <DollarSign className="h-3.5 w-3.5 shrink-0 inline-flex" />
             Preț combustibil (RON/litru)
           </Label>
           <Input
@@ -93,7 +108,7 @@ export function SettingsPanel({ settings, onUpdate, isApiLoaded, apiError }: Set
         {/* Average Consumption */}
         <div className="space-y-1.5">
           <Label htmlFor="consumption" className="input-label flex items-center gap-2">
-            <Gauge className="h-3.5 w-3.5" />
+            <Gauge className="h-3.5 w-3.5 shrink-0 inline-flex" />
             Consum mediu (litri/100km)
           </Label>
           <Input
