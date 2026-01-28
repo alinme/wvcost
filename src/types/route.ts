@@ -2,6 +2,7 @@ export interface Address {
   id: string;
   value: string;
   placeId?: string;
+  kits?: number;
 }
 
 export interface Departure {

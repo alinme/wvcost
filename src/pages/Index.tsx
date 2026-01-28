@@ -19,6 +19,7 @@ const Index = () => {
     removeIntermediateStop,
     updateAddress,
     grandTotal,
+    updateStopKits,
   } = useDepartures();
 
   // If setting is empty, use key from env (e.g. Netlify / .env)
@@ -109,19 +110,22 @@ const Index = () => {
 
           {/* Main Content - Departures */}
           <div className="space-y-6">
-            {/* Grand Total with Print */}
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-              <GrandTotalCard
-                distance={grandTotal.distance}
-                fuelConsumption={grandTotal.fuelConsumption}
-                totalCost={grandTotal.totalCost}
-              />
+          {/* Grand Total with Print */}
+          <div className="space-y-4">
+            <GrandTotalCard
+              distance={grandTotal.distance}
+              fuelConsumption={grandTotal.fuelConsumption}
+              totalCost={grandTotal.totalCost}
+              kits={grandTotal.kits}
+            />
+            <div className="flex justify-end">
               <PrintReport
                 departures={departures}
                 settings={settings}
                 grandTotal={grandTotal}
               />
             </div>
+          </div>
 
             {/* Departures */}
             <div className="space-y-6">
@@ -137,6 +141,9 @@ const Index = () => {
                   }
                   onAddStop={() => addIntermediateStop(departure.id)}
                   onRemoveStop={(stopId) => removeIntermediateStop(departure.id, stopId)}
+                  onUpdateStopKits={(stopId, kits) =>
+                    updateStopKits(departure.id, stopId, kits)
+                  }
                   onRemove={() => removeDeparture(departure.id)}
                   onCalculate={() => handleCalculate(departure.id)}
                   onToggleCollapse={() =>

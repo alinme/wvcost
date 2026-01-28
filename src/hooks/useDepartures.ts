@@ -6,6 +6,7 @@ const generateId = () => Math.random().toString(36).substring(2, 9);
 const createEmptyAddress = (): Address => ({
   id: generateId(),
   value: '',
+  kits: 0,
 });
 
 const createEmptyDeparture = (index: number): Departure => ({
@@ -114,13 +115,39 @@ export function useDepartures() {
     []
   );
 
+  const updateStopKits = useCallback(
+    (departureId: string, stopId: string, kits: number) => {
+      setDepartures((prev) =>
+        prev.map((d) =>
+          d.id === departureId
+            ? {
+                ...d,
+                intermediateStops: d.intermediateStops.map((s) =>
+                  s.id === stopId ? { ...s, kits } : s
+                ),
+              }
+            : d
+        )
+      );
+    },
+    []
+  );
+
   const grandTotal = departures.reduce(
-    (acc, d) => ({
-      distance: acc.distance + (d.distance || 0),
-      fuelConsumption: acc.fuelConsumption + (d.fuelConsumption || 0),
-      totalCost: acc.totalCost + (d.totalCost || 0),
-    }),
-    { distance: 0, fuelConsumption: 0, totalCost: 0 }
+    (acc, d) => {
+      const departureKits = d.intermediateStops?.reduce(
+        (kitsAcc, stop) => kitsAcc + (stop.kits || 0),
+        0
+      );
+
+      return {
+        distance: acc.distance + (d.distance || 0),
+        fuelConsumption: acc.fuelConsumption + (d.fuelConsumption || 0),
+        totalCost: acc.totalCost + (d.totalCost || 0),
+        kits: acc.kits + departureKits,
+      };
+    },
+    { distance: 0, fuelConsumption: 0, totalCost: 0, kits: 0 }
   );
 
   return {
@@ -131,6 +158,7 @@ export function useDepartures() {
     addIntermediateStop,
     removeIntermediateStop,
     updateAddress,
+    updateStopKits,
     grandTotal,
   };
 }

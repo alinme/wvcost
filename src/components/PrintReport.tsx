@@ -9,6 +9,7 @@ interface PrintReportProps {
     distance: number;
     fuelConsumption: number;
     totalCost: number;
+    kits: number;
   };
 }
 
@@ -17,7 +18,15 @@ export function PrintReport({ departures, settings, grandTotal }: PrintReportPro
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
 
-    const calculatedDepartures = departures.filter(d => d.distance !== null);
+    const calculatedDepartures = departures
+      .filter(d => d.distance !== null)
+      .map(d => ({
+        ...d,
+        kits: d.intermediateStops?.reduce(
+          (acc, stop) => acc + (stop.kits || 0),
+          0
+        ) ?? 0,
+      }));
     
     const html = `
       <!DOCTYPE html>
@@ -104,7 +113,7 @@ export function PrintReport({ departures, settings, grandTotal }: PrintReportPro
           }
           .stats-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 8px;
             background: #f8fafc;
             padding: 8px;
@@ -232,6 +241,10 @@ export function PrintReport({ departures, settings, grandTotal }: PrintReportPro
                   <div class="value">${departure.totalCost?.toFixed(0) || '0'}</div>
                   <div class="unit">RON</div>
                 </div>
+                <div class="stat-item">
+                  <div class="value">${departure.kits?.toFixed(0) || '0'}</div>
+                  <div class="unit">kits</div>
+                </div>
               </div>
             </div>
           </div>
@@ -251,6 +264,10 @@ export function PrintReport({ departures, settings, grandTotal }: PrintReportPro
             <div class="stat-item">
               <div class="value">${grandTotal.totalCost.toFixed(0)}</div>
               <div class="unit">RON total</div>
+            </div>
+            <div class="stat-item">
+              <div class="value">${grandTotal.kits.toFixed(0)}</div>
+              <div class="unit">kits total</div>
             </div>
           </div>
         </div>
