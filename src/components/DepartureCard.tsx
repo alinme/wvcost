@@ -15,6 +15,7 @@ import {
   Loader2,
   ChevronDown,
   ChevronUp,
+  Backpack,
 } from 'lucide-react';
 
 interface DepartureCardProps {
@@ -25,6 +26,7 @@ interface DepartureCardProps {
   onUpdateAddress: (type: 'start' | 'return' | 'intermediate', value: string, stopId?: string) => void;
   onAddStop: () => void;
   onRemoveStop: (stopId: string) => void;
+  onUpdateStopKits: (stopId: string, kits: number) => void;
   onRemove: () => void;
   onCalculate: () => void;
   onToggleCollapse: () => void;
@@ -39,6 +41,7 @@ export function DepartureCard({
   onUpdateAddress,
   onAddStop,
   onRemoveStop,
+  onUpdateStopKits,
   onRemove,
   onCalculate,
   onToggleCollapse,
@@ -48,12 +51,11 @@ export function DepartureCard({
     departure.startAddress.value.trim() && departure.returnAddress.value.trim();
   const isCollapsed = departure.isCollapsed ?? false;
 
-  const summary =
-    departure.distance != null
-      ? `${departure.distance.toFixed(1)} km · ${departure.totalCost?.toFixed(0) ?? '-'} RON`
-      : departure.startAddress.value || departure.returnAddress.value
-        ? `${departure.startAddress.value || '…'} → ${departure.returnAddress.value || '…'}`
-        : null;
+  const totalKits =
+    departure.intermediateStops?.reduce(
+      (acc, stop) => acc + (stop.kits || 0),
+      0
+    ) ?? 0;
 
   return (
     <div className="card-elevated overflow-hidden animate-fade-in">
@@ -63,8 +65,26 @@ export function DepartureCard({
           <Route className="h-5 w-5 shrink-0" />
           <div className="min-w-0">
             <h3 className="font-semibold text-lg">{departure.name}</h3>
-            {isCollapsed && summary && (
-              <p className="text-sm text-primary-foreground/80 truncate mt-0.5">{summary}</p>
+            {isCollapsed && (
+              <div className="text-sm text-primary-foreground/80 flex items-center gap-3 mt-0.5">
+                {departure.distance != null ? (
+                  <>
+                    <span className="truncate">
+                      {departure.distance.toFixed(1)} km ·{' '}
+                      {departure.totalCost?.toFixed(0) ?? '-'} RON
+                    </span>
+                    <span className="inline-flex items-center gap-1 shrink-0">
+                      <Backpack className="h-3.5 w-3.5" />
+                      <span>{totalKits}</span>
+                    </span>
+                  </>
+                ) : departure.startAddress.value || departure.returnAddress.value ? (
+                  <span className="truncate">
+                    {departure.startAddress.value || '…'} →{' '}
+                    {departure.returnAddress.value || '…'}
+                  </span>
+                ) : null}
+              </div>
             )}
           </div>
         </div>
@@ -138,6 +158,8 @@ export function DepartureCard({
                   onChange={(v) => onUpdateAddress('intermediate', v, stop.id)}
                   placeholder={`Oprirea ${index + 1}...`}
                   isGoogleLoaded={isGoogleLoaded}
+                  kits={stop.kits ?? 0}
+                  onKitsChange={(kits) => onUpdateStopKits(stop.id, kits)}
                   showRemove
                   onRemove={() => onRemoveStop(stop.id)}
                 />

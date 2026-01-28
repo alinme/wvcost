@@ -1,13 +1,14 @@
-import { Route, Fuel, Banknote, TrendingUp } from 'lucide-react';
+import { Route, Fuel, Banknote, TrendingUp, Backpack } from 'lucide-react';
 
 interface GrandTotalProps {
   distance: number;
   fuelConsumption: number;
   totalCost: number;
+  kits: number;
 }
 
-export function GrandTotalCard({ distance, fuelConsumption, totalCost }: GrandTotalProps) {
-  if (distance === 0) return null;
+export function GrandTotalCard({ distance, fuelConsumption, totalCost, kits }: GrandTotalProps) {
+  if (distance === 0 && kits === 0) return null;
 
   return (
     <div className="card-elevated overflow-hidden animate-fade-in">
@@ -16,8 +17,8 @@ export function GrandTotalCard({ distance, fuelConsumption, totalCost }: GrandTo
         <h3 className="font-semibold text-lg text-accent-foreground">Total General</h3>
       </div>
       
-      <div className="p-6">
-        <div className="grid grid-cols-3 gap-6">
+      <div className="p-6 w-full">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-3">
               <Route className="h-6 w-6 text-primary" />
@@ -40,6 +41,14 @@ export function GrandTotalCard({ distance, fuelConsumption, totalCost }: GrandTo
             </div>
             <p className="stat-value">{totalCost.toFixed(0)}</p>
             <p className="stat-label">RON Total</p>
+          </div>
+
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-muted/50 mb-3">
+              <Backpack className="h-6 w-6" />
+            </div>
+            <p className="stat-value">{kits.toFixed(0)}</p>
+            <p className="stat-label">Kits totale</p>
           </div>
         </div>
       </div>

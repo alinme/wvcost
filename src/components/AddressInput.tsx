@@ -11,6 +11,8 @@ interface AddressInputProps {
   isGoogleLoaded: boolean;
   onRemove?: () => void;
   showRemove?: boolean;
+  kits?: number;
+  onKitsChange?: (value: number) => void;
 }
 
 export function AddressInput({
@@ -20,6 +22,8 @@ export function AddressInput({
   isGoogleLoaded,
   onRemove,
   showRemove = false,
+  kits,
+  onKitsChange,
 }: AddressInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
@@ -72,6 +76,28 @@ export function AddressInput({
     onChange(newValue);
   }, [onChange]);
 
+  const handleKitsInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (!onKitsChange) return;
+      const parsed = parseInt(e.target.value || '0', 10);
+      const safeValue = Number.isNaN(parsed) ? 0 : Math.max(0, parsed);
+      onKitsChange(safeValue);
+    },
+    [onKitsChange]
+  );
+
+  const handleDecrementKits = useCallback(() => {
+    if (!onKitsChange) return;
+    const current = typeof kits === 'number' ? kits : 0;
+    onKitsChange(Math.max(0, current - 1));
+  }, [kits, onKitsChange]);
+
+  const handleIncrementKits = useCallback(() => {
+    if (!onKitsChange) return;
+    const current = typeof kits === 'number' ? kits : 0;
+    onKitsChange(current + 1);
+  }, [kits, onKitsChange]);
+
   return (
     <div className="relative flex items-center gap-2">
       <div className="relative flex-1">
@@ -84,17 +110,48 @@ export function AddressInput({
           className="pl-10 bg-background border-input focus:ring-2 focus:ring-primary/20"
         />
       </div>
-      {showRemove && onRemove && (
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          onClick={onRemove}
-          className="h-9 w-9 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-        >
-          <X className="h-4 w-4" />
-        </Button>
-      )}
+      <div className="flex items-center gap-2">
+        {typeof kits === 'number' && onKitsChange && (
+          <div className="flex items-center gap-1">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={handleDecrementKits}
+              className="h-8 w-8"
+            >
+              -
+            </Button>
+            <Input
+              type="number"
+              min={0}
+              value={Number.isNaN(kits) ? 0 : kits}
+              onChange={handleKitsInputChange}
+              className="w-16 text-center px-2"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={handleIncrementKits}
+              className="h-8 w-8"
+            >
+              +
+            </Button>
+          </div>
+        )}
+        {showRemove && onRemove && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={onRemove}
+            className="h-9 w-9 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
     </div>
   );
 }
